@@ -16,6 +16,7 @@ FirstPerson = function(args) {
 
   this.camera    = args.camera;
   this.moveSpeed = args.moveSpeed || 1000;
+  this.distance  = args.distance || 1000;
 
   this.canvas       = document;
   this.viewHalfX    = window.innerWidth  / 2;
@@ -46,9 +47,9 @@ FirstPerson = function(args) {
 
     var latitudeRad  = this.latitude  * Math.PI / 180;
     var longitudeRad = this.longitude * Math.PI / 180;
-    this.viewTarget.x = this.camera.position.x + 1000 * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-    this.viewTarget.z = this.camera.position.z + 1000 * Math.cos(latitudeRad) * Math.sin(longitudeRad);
-    this.viewTarget.y = this.camera.position.y + 1000 * Math.sin(latitudeRad);
+    this.viewTarget.x = this.camera.position.x + this.distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
+    this.viewTarget.z = this.camera.position.z + this.distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
+    this.viewTarget.y = this.camera.position.y + this.distance * Math.sin(latitudeRad);
     this.camera.lookAt({
       x: this.viewTarget.x,
       y: this.viewTarget.y,
