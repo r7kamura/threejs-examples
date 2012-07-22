@@ -2,8 +2,8 @@
   var renderer,
       camera,
       scene,
-      view,
       clock,
+      controller,
       canvas;
 
   (function self() {
@@ -78,13 +78,13 @@
     }
   }
 
-  function initView() {
-    view = new FirstPersonView({ camera: camera });
+  function initController() {
+    controller = new FirstPersonController({ camera: camera });
     clock = new THREE.Clock();
   }
 
   function render() {
-    view.update(clock.getDelta());
+    controller.update(clock.getDelta());
     renderer.clear();
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
@@ -101,7 +101,7 @@
     initCamera();
     initLight();
     initFloor();
-    initView();
+    initController();
     appendCanvas();
     render();
   }

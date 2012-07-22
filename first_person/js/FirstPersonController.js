@@ -10,16 +10,16 @@
 * Key Down    => turn down
 *
 * Example:
-*   var scene  = new THREE.Scene();
-*   var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
-*   var clock  = new THREE.Clock();
-*   var view   = new FirstPersonView({ camera: camera });
+*   var scene      = new THREE.Scene();
+*   var camera     = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+*   var clock      = new THREE.Clock();
+*   var controller = new FirstPersonController({ camera: camera });
 *
 *   scene.add(camera);
 *   render();
 *
 *   function render() {
-*     view.update(clock.getDelta());
+*     controller.update(clock.getDelta());
 *     renderer.clear();
 *     renderer.render(scene, camera);
 *     window.requestAnimationFrame(render);
@@ -30,7 +30,7 @@
 * @params [args.moveSpeed] scale of movement speed (default: 1000)
 * @params [args.distance]  distance from camera to its target point (default: 1000)
 * */
-var FirstPersonView = function self(args) {
+var FirstPersonController = function self(args) {
   var camera       = args.camera;
   var moveSpeed    = args.moveSpeed || 1000;
   var distance     = args.distance || 1000;
