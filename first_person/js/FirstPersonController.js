@@ -77,7 +77,7 @@ var FirstPersonController = function self(args) {
     viewTarget.z = camera.position.z + distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
     viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
     camera.lookAt(viewTarget);
-  }
+  };
 
   function onMouseDown(event) {
     event.preventDefault();
@@ -145,6 +145,6 @@ var FirstPersonController = function self(args) {
       return function() {
         fn.apply(scope, arguments);
       };
-    };
+    }
   }
 };
