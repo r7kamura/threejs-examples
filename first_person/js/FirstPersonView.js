@@ -1,6 +1,7 @@
 /**
 * Create a first-person viewpoint controller for passed camera.
 *
+* mouse move  => move viewpoint to follow mouse pointer
 * click Left  => move forward
 * click Right => move backward
 * Key Left    => rotate laterally
@@ -26,8 +27,8 @@
 *
 * @class Behave first-person viewpoint.
 * @params args.camera      THREE.camera
-* @params [args.moveSpeed] scale of movement speed
-* @params [args.distance]  distance from camera to target of camera
+* @params [args.moveSpeed] scale of movement speed (default: 1000)
+* @params [args.distance]  distance from camera to its target point (default: 1000)
 * */
 var FirstPersonView = function self(args) {
   var camera       = args.camera;
