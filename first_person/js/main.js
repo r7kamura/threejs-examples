@@ -78,6 +78,19 @@
     }
   }
 
+  function initSky() {
+    var sky = new THREE.Mesh(
+      new THREE.SphereGeometry(4000, 20, 20),
+      new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        map: THREE.ImageUtils.loadTexture("images/sky.png")
+      })
+    );
+    sky.flipSided = true;
+    scene.add(sky);
+    scene.fog = new THREE.FogExp2(0xFFFFFF, 0.0002);
+  }
+
   function initController() {
     controller = new FirstPersonController({ camera: camera });
     clock = new THREE.Clock();
@@ -101,6 +114,7 @@
     initCamera();
     initLight();
     initFloor();
+    initSky();
     initController();
     appendCanvas();
     render();
