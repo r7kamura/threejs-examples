@@ -1,16 +1,10 @@
 (function() {
-  var width,
-      height,
-      renderer,
+  var renderer,
       camera,
       scene,
-      light,
       view,
       clock,
-      isMouseDown,
-      canvas,
-      x = 0,
-      y = 0;
+      canvas;
 
   (function self() {
     if (document.body) {
@@ -20,20 +14,23 @@
     }
   })();
 
-  function initCanvasSize() {
+  function initCanvas() {
     canvas = document.getElementById('canvas');
-    width  = canvas.clientWidth;
-    height = canvas.clientHeight;
   }
 
   function initRenderer() {
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(width, height);
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
     renderer.setClearColorHex(0xFFFFFF, 1.0);
   }
 
   function initCamera() {
-    camera = new THREE.PerspectiveCamera(50, width / height, 1, 10000);
+    camera = new THREE.PerspectiveCamera(
+      50,
+      canvas.clientWidth / canvas.clientHeight,
+      1,
+      10000
+    );
     camera.position.x = -1000;
     camera.position.y = 100;
     camera.position.z = 0;
@@ -53,7 +50,7 @@
   }
 
   function initLight() {
-    light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+    var light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
     light.position.set(0, 1000, 0);
     scene.add(light);
   }
@@ -82,15 +79,12 @@
   }
 
   function initView() {
-    view = new FirstPersonView({
-      camera: camera,
-    });
+    view = new FirstPersonView({ camera: camera });
     clock = new THREE.Clock();
   }
 
   function render() {
     view.update(clock.getDelta());
-
     renderer.clear();
     renderer.render(scene, camera);
     window.requestAnimationFrame(render);
@@ -101,7 +95,7 @@
   }
 
   function init() {
-    initCanvasSize();
+    initCanvas();
     initRenderer();
     initScene();
     initCamera();

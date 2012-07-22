@@ -52,28 +52,24 @@ var FirstPersonView = function self(args) {
 
   /** @public */
   self.prototype.update = function(delta) {
-    var moveDelta = moveSpeed * delta;
+    var moveDelta = delta * moveSpeed,
+        lookDelta = delta * lookSpeed;
 
     if (moveForward)  camera.translateZ(-moveDelta);
     if (moveBackward) camera.translateZ( moveDelta);
     if (moveLeft)     camera.translateX(-moveDelta);
     if (moveRight)    camera.translateX( moveDelta);
 
-    var lookDelta = delta * lookSpeed;
     longitude += mouseX * lookDelta;
     latitude  -= mouseY * lookDelta;
-    latitude   = Math.max(-85, Math.min(85, latitude));
+    latitude   = Math.max(-90, Math.min(90, latitude));
 
     var latitudeRad  = latitude  * Math.PI / 180;
     var longitudeRad = longitude * Math.PI / 180;
     viewTarget.x = camera.position.x + distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
     viewTarget.z = camera.position.z + distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
     viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
-    camera.lookAt({
-      x: viewTarget.x,
-      y: viewTarget.y,
-      z: viewTarget.z
-    });
+    camera.lookAt(viewTarget);
   }
 
   function onMouseDown(event) {
