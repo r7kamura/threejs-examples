@@ -39,7 +39,7 @@
     camera.up.z = 0;
     camera.lookAt({
       x: 0,
-      y: 100,
+      y: 1000,
       z: 0
     });
     scene.add(camera);

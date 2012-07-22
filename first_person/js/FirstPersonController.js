@@ -71,9 +71,7 @@ var FirstPersonController = function self(args) {
 
     viewTarget.x = camera.position.x + distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
     viewTarget.z = camera.position.z + distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
-    if (enableVertical) {
-      viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
-    }
+    viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
     camera.lookAt(viewTarget);
   }
 
