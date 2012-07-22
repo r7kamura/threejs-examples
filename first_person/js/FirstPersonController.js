@@ -38,7 +38,6 @@ var FirstPersonController = function self(args) {
   var distance       = args.distance || 1000;
   var enableVertical = args.enableVertical;
 
-  var canvas       = document;
   var viewHalfX    = window.innerWidth  / 2;
   var viewHalfY    = window.innerHeight / 2;
   var mouseDrag    = false;
@@ -132,12 +131,12 @@ var FirstPersonController = function self(args) {
   }
 
   function bindKeyAndMouseEvents() {
-    canvas.addEventListener('contextmenu', bind(this, onContextMenu), false);
-    canvas.addEventListener('mousemove',   bind(this, onMouseMove),   false);
-    canvas.addEventListener('mousedown',   bind(this, onMouseDown),   false);
-    canvas.addEventListener('mouseup',     bind(this, onMouseUp),     false);
-    canvas.addEventListener('keyup',       bind(this, onKeyUp),       false);
-    canvas.addEventListener('keydown',     bind(this, onKeyDown),     false);
+    document.addEventListener('contextmenu', bind(this, onContextMenu), false);
+    document.addEventListener('mousemove',   bind(this, onMouseMove),   false);
+    document.addEventListener('mousedown',   bind(this, onMouseDown),   false);
+    document.addEventListener('mouseup',     bind(this, onMouseUp),     false);
+    document.addEventListener('keyup',       bind(this, onKeyUp),       false);
+    document.addEventListener('keydown',     bind(this, onKeyDown),     false);
 
     function bind(scope, fn) {
       return function() {
