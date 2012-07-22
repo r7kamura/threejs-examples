@@ -1,15 +1,17 @@
-/*
-* @params
-*   camera    => THREE.camera
-*   moveSpeed => the scale of movement speed
+/**
+* Create a first-person viewpoint controller for passed camera.
 *
-* @feature
-*   click Left  => move forward
-*   click Right => move backward
-*   Key Left    => rotate laterally
-*   Key Right   => rotate laterally
-*   Key Up      => turn up
-*   Key Down    => turn down
+* click Left  => move forward
+* click Right => move backward
+* Key Left    => rotate laterally
+* Key Right   => rotate laterally
+* Key Up      => turn up
+* Key Down    => turn down
+*
+* @class Behave first-person viewpoint.
+* @params args.camera      THREE.camera
+* @params [args.moveSpeed] scale of movement speed
+* @params [args.distance]  distance from camera to target of camera
 * */
 var FirstPerson = function self(args) {
   var camera       = args.camera;
@@ -31,6 +33,7 @@ var FirstPerson = function self(args) {
 
   bindKeyAndMouseEvents();
 
+  /** @public */
   self.prototype.update = function(delta) {
     var moveDelta = moveSpeed * delta;
 
@@ -42,7 +45,7 @@ var FirstPerson = function self(args) {
     var lookDelta = delta * lookSpeed;
     longitude += mouseX * lookDelta;
     latitude  -= mouseY * lookDelta;
-    latitude  = Math.max(-85, Math.min(85, latitude));
+    latitude   = Math.max(-85, Math.min(85, latitude));
 
     var latitudeRad  = latitude  * Math.PI / 180;
     var longitudeRad = longitude * Math.PI / 180;
