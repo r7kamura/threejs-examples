@@ -5,7 +5,7 @@
       camera,
       scene,
       light,
-      controls,
+      view,
       clock,
       isMouseDown,
       canvas,
@@ -81,15 +81,15 @@
     }
   }
 
-  function initControl() {
-    controls = new FirstPersonView({
+  function initView() {
+    view = new FirstPersonView({
       camera: camera,
     });
     clock = new THREE.Clock();
   }
 
   function render() {
-    controls.update(clock.getDelta());
+    view.update(clock.getDelta());
 
     renderer.clear();
     renderer.render(scene, camera);
@@ -107,7 +107,7 @@
     initCamera();
     initLight();
     initFloor();
-    initControl();
+    initView();
     appendCanvas();
     render();
   }
