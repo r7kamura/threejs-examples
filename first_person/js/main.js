@@ -65,9 +65,9 @@
         tile = new THREE.Mesh(
           new THREE.PlaneGeometry(size, size, 1, 1),
           new THREE.MeshLambertMaterial({
-            color: ((x + z) % 2 == 0) ? 0x666666 : 0xDDDDDD
+            color: ((x + z) % 2 === 0) ? 0x666666 : 0xDDDDDD
           })
-        )
+        );
         tile.position.set(
           x * size,
           0,
