@@ -83,7 +83,7 @@ $(function() {
   }
 
   function initControl() {
-    controls = new FirstPerson({
+    controls = new FirstPersonView({
       camera: camera,
     });
     clock = new THREE.Clock();

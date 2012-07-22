@@ -8,12 +8,28 @@
 * Key Up      => turn up
 * Key Down    => turn down
 *
+* Example:
+*   var scene  = new THREE.Scene();
+*   var camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 10000);
+*   var clock  = new THREE.Clock();
+*   var view   = new FirstPersonView({ camera: camera });
+*
+*   scene.add(camera);
+*   render();
+*
+*   function render() {
+*     view.update(clock.getDelta());
+*     renderer.clear();
+*     renderer.render(scene, camera);
+*     window.requestAnimationFrame(render);
+*   }
+*
 * @class Behave first-person viewpoint.
 * @params args.camera      THREE.camera
 * @params [args.moveSpeed] scale of movement speed
 * @params [args.distance]  distance from camera to target of camera
 * */
-var FirstPerson = function self(args) {
+var FirstPersonView = function self(args) {
   var camera       = args.camera;
   var moveSpeed    = args.moveSpeed || 1000;
   var distance     = args.distance || 1000;
