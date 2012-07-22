@@ -26,14 +26,17 @@
 *   }
 *
 * @class Behave first-person viewpoint.
-* @params args.camera      THREE.camera
+* @params args.camera THREE.camera
 * @params [args.moveSpeed] scale of movement speed (default: 1000)
-* @params [args.distance]  distance from camera to its target point (default: 1000)
+* @params [args.distance] distance from camera to its target point (default: 1000)
+* @params [agrs.enableVertical] flag to allow move vertically
 * */
 var FirstPersonController = function self(args) {
-  var camera       = args.camera;
-  var moveSpeed    = args.moveSpeed || 1000;
-  var distance     = args.distance || 1000;
+  var camera         = args.camera;
+  var moveSpeed      = args.moveSpeed || 1000;
+  var distance       = args.distance || 1000;
+  var enableVertical = args.enableVertical;
+
   var canvas       = document;
   var viewHalfX    = window.innerWidth  / 2;
   var viewHalfY    = window.innerHeight / 2;
@@ -63,7 +66,6 @@ var FirstPersonController = function self(args) {
     longitude += mouseX * lookDelta;
     latitude  -= mouseY * lookDelta;
     latitude   = Math.max(-90, Math.min(90, latitude));
-
     var latitudeRad  = latitude  * Math.PI / 180;
     var longitudeRad = longitude * Math.PI / 180;
     viewTarget.x = camera.position.x + distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
@@ -99,7 +101,8 @@ var FirstPersonController = function self(args) {
     event.stopPropagation();
 
     mouseX = event.pageX - viewHalfX;
-    mouseY = event.pageY - viewHalfY;
+    if (enableVertical)
+      mouseY = event.pageY - viewHalfY;
   }
 
   function onKeyDown(event) {
