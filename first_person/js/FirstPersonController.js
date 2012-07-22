@@ -34,6 +34,7 @@
 var FirstPersonController = function self(args) {
   var camera         = args.camera;
   var moveSpeed      = args.moveSpeed || 1000;
+  var lookSpeed      = args.lookSpeed || 0.1;
   var distance       = args.distance || 1000;
   var enableVertical = args.enableVertical;
 
@@ -48,7 +49,6 @@ var FirstPersonController = function self(args) {
   var mouseY       = 0;
   var latitude     = 0;
   var longitude    = 0;
-  var lookSpeed    = 0.01;
   var viewTarget   = new THREE.Vector3(0, 0, 100);
 
   bindKeyAndMouseEvents();
