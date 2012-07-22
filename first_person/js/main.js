@@ -1,4 +1,4 @@
-$(function() {
+(function() {
   var width,
       height,
       renderer,
@@ -8,18 +8,22 @@ $(function() {
       controls,
       clock,
       isMouseDown,
-      x     = 0,
-      y     = 0,
-      fps   = 0,
-      frame = 0,
-      sec   = 0;
+      canvas,
+      x = 0,
+      y = 0;
 
-  init();
+  (function self() {
+    if (document.body) {
+      init();
+    } else {
+      setTimeout(self, 1);
+    }
+  })();
 
   function initCanvasSize() {
-    var canvas = $('#canvas');
-    width  = canvas.width();
-    height = canvas.height();
+    canvas = document.getElementById('canvas');
+    width  = canvas.clientWidth;
+    height = canvas.clientHeight;
   }
 
   function initRenderer() {
@@ -54,11 +58,6 @@ $(function() {
     scene.add(light);
   }
 
-  function startLoop() {
-    loopPerFrame();
-    loopPerSec();
-  }
-
   function initFloor() {
     var sideNum = 10,
         size    = 100,
@@ -89,41 +88,16 @@ $(function() {
     clock = new THREE.Clock();
   }
 
-  function loopPerFrame() {
-    frame++;
-    fps++;
-
+  function render() {
     controls.update(clock.getDelta());
-    updateStatusFrame();
 
     renderer.clear();
     renderer.render(scene, camera);
-    window.requestAnimationFrame(loopPerFrame);
+    window.requestAnimationFrame(render);
   }
 
-  function loopPerSec() {
-    setInterval(function() {
-      updateStatusSec();
-      updateStatusFps();
-      fps = 0;
-      sec++;
-    }, 1000);
-  }
-
-  function updateStatusFps() {
-    $('#status .fps .value').text(fps);
-  }
-
-  function updateStatusSec() {
-    $('#status .sec .value').text(sec);
-  }
-
-  function updateStatusFrame() {
-    $('#status .frame .value').text(frame);
-  }
-
-  function render() {
-    $('#canvas').append(renderer.domElement);
+  function appendCanvas() {
+    canvas.appendChild(renderer.domElement);
   }
 
   function init() {
@@ -134,7 +108,7 @@ $(function() {
     initLight();
     initFloor();
     initControl();
-    startLoop();
+    appendCanvas();
     render();
   }
-});
+})();
