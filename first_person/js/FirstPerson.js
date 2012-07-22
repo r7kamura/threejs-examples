@@ -11,115 +11,112 @@
 *   Key Up      => turn up
 *   Key Down    => turn down
 * */
-FirstPerson = function(args) {
-  // initialize
+var FirstPerson = function self(args) {
+  var camera       = args.camera;
+  var moveSpeed    = args.moveSpeed || 1000;
+  var distance     = args.distance || 1000;
+  var canvas       = document;
+  var viewHalfX    = window.innerWidth  / 2;
+  var viewHalfY    = window.innerHeight / 2;
+  var moveForward  = false;
+  var moveBackward = false;
+  var moveLeft     = false;
+  var moveRight    = false;
+  var mouseX       = 0;
+  var mouseY       = 0;
+  var latitude     = 0;
+  var longitude    = 0;
+  var lookSpeed    = 0.01;
+  var viewTarget   = new THREE.Vector3(0, 0, 100);
 
-  this.camera    = args.camera;
-  this.moveSpeed = args.moveSpeed || 1000;
-  this.distance  = args.distance || 1000;
+  bindKeyAndMouseEvents();
 
-  this.canvas       = document;
-  this.viewHalfX    = window.innerWidth  / 2;
-  this.viewHalfY    = window.innerHeight / 2;
-  this.moveForward  = false;
-  this.moveBackward = false;
-  this.mouseX       = 0;
-  this.mouseY       = 0;
-  this.latitude     = 0;
-  this.longitude    = 0;
-  this.lookSpeed    = 0.01;
-  this.viewTarget   = new THREE.Vector3(0, 0, 100);
+  self.prototype.update = function(delta) {
+    var moveDelta = moveSpeed * delta;
 
-  // public
+    if (moveForward)  camera.translateZ(-moveDelta);
+    if (moveBackward) camera.translateZ( moveDelta);
+    if (moveLeft)     camera.translateX(-moveDelta);
+    if (moveRight)    camera.translateX( moveDelta);
 
-  this.update = function(delta) {
-    var moveDelta = this.moveSpeed * delta;
+    var lookDelta = delta * lookSpeed;
+    longitude += mouseX * lookDelta;
+    latitude  -= mouseY * lookDelta;
+    latitude  = Math.max(-85, Math.min(85, latitude));
 
-    if (this.moveForward)  this.camera.translateZ(-moveDelta);
-    if (this.moveBackward) this.camera.translateZ( moveDelta);
-    if (this.moveLeft)     this.camera.translateX(-moveDelta);
-    if (this.moveRight)    this.camera.translateX( moveDelta);
-
-    var lookDelta = delta * this.lookSpeed;
-    this.longitude += this.mouseX * lookDelta;
-    this.latitude  -= this.mouseY * lookDelta;
-    this.latitude  = Math.max(-85, Math.min(85, this.latitude));
-
-    var latitudeRad  = this.latitude  * Math.PI / 180;
-    var longitudeRad = this.longitude * Math.PI / 180;
-    this.viewTarget.x = this.camera.position.x + this.distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
-    this.viewTarget.z = this.camera.position.z + this.distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
-    this.viewTarget.y = this.camera.position.y + this.distance * Math.sin(latitudeRad);
-    this.camera.lookAt({
-      x: this.viewTarget.x,
-      y: this.viewTarget.y,
-      z: this.viewTarget.z
+    var latitudeRad  = latitude  * Math.PI / 180;
+    var longitudeRad = longitude * Math.PI / 180;
+    viewTarget.x = camera.position.x + distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
+    viewTarget.z = camera.position.z + distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
+    viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
+    camera.lookAt({
+      x: viewTarget.x,
+      y: viewTarget.y,
+      z: viewTarget.z
     });
   }
 
-  // private
-
-  this.onMouseDown = function(event) {
+  function onMouseDown(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    this.mouseDrag = true;
+    mouseDrag = true;
     switch(event.button) {
-      case 0: this.moveForward  = true; break;
-      case 2: this.moveBackward = true; break;
+      case 0: moveForward  = true; break;
+      case 2: moveBackward = true; break;
     }
   }
 
-  this.onMouseUp = function(event) {
+  function onMouseUp(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    this.mouseDrag = false;
+    mouseDrag = false;
     switch(event.button) {
-      case 0: this.moveForward  = false; break;
-      case 2: this.moveBackward = false; break;
+      case 0: moveForward  = false; break;
+      case 2: moveBackward = false; break;
     }
   }
 
-  this.onMouseMove = function(event) {
+  function onMouseMove(event) {
     event.preventDefault();
     event.stopPropagation();
 
-    this.mouseX = event.pageX - this.viewHalfX;
-    this.mouseY = event.pageY - this.viewHalfY;
+    mouseX = event.pageX - viewHalfX;
+    mouseY = event.pageY - viewHalfY;
   }
 
-  this.onKeyDown = function(event) {
+  function onKeyDown(event) {
     switch(keyString(event)) {
-      case 'Up':    this.moveForward  = true; break;
-      case 'Down':  this.moveBackward = true; break;
-      case 'Left':  this.moveLeft     = true; break;
-      case 'Right': this.moveRight    = true; break;
+      case 'Up':    moveForward  = true; break;
+      case 'Down':  moveBackward = true; break;
+      case 'Left':  moveLeft     = true; break;
+      case 'Right': moveRight    = true; break;
     }
   }
 
-  this.onKeyUp = function(event) {
+  function onKeyUp(event) {
     switch(keyString(event)) {
-      case 'Up':    this.moveForward  = false; break;
-      case 'Down':  this.moveBackward = false; break;
-      case 'Left':  this.moveLeft     = false; break;
-      case 'Right': this.moveRight    = false; break;
+      case 'Up':    moveForward  = false; break;
+      case 'Down':  moveBackward = false; break;
+      case 'Left':  moveLeft     = false; break;
+      case 'Right': moveRight    = false; break;
     }
   }
 
-  this.onContextMenu = function(event) {
+  function onContextMenu(event) {
     event.preventDefault();
     event.stopPropagation();
     // Do nothing
   }
 
-  this.bindKeyAndMouseEvents = function() {
-    this.canvas.addEventListener('contextmenu', bind(this, this.onContextMenu), false);
-    this.canvas.addEventListener('mousemove',   bind(this, this.onMouseMove),   false);
-    this.canvas.addEventListener('mousedown',   bind(this, this.onMouseDown),   false);
-    this.canvas.addEventListener('mouseup',     bind(this, this.onMouseUp),     false);
-    this.canvas.addEventListener('keyup',       bind(this, this.onKeyUp),       false);
-    this.canvas.addEventListener('keydown',     bind(this, this.onKeyDown),     false);
+  function bindKeyAndMouseEvents() {
+    canvas.addEventListener('contextmenu', bind(this, onContextMenu), false);
+    canvas.addEventListener('mousemove',   bind(this, onMouseMove),   false);
+    canvas.addEventListener('mousedown',   bind(this, onMouseDown),   false);
+    canvas.addEventListener('mouseup',     bind(this, onMouseUp),     false);
+    canvas.addEventListener('keyup',       bind(this, onKeyUp),       false);
+    canvas.addEventListener('keydown',     bind(this, onKeyDown),     false);
 
     function bind(scope, fn) {
       return function() {
@@ -127,6 +124,4 @@ FirstPerson = function(args) {
       };
     };
   }
-
-  this.bindKeyAndMouseEvents();
 };
