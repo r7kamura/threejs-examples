@@ -68,9 +68,12 @@ var FirstPersonController = function self(args) {
     latitude   = Math.max(-90, Math.min(90, latitude));
     var latitudeRad  = latitude  * Math.PI / 180;
     var longitudeRad = longitude * Math.PI / 180;
+
     viewTarget.x = camera.position.x + distance * Math.cos(latitudeRad) * Math.cos(longitudeRad);
     viewTarget.z = camera.position.z + distance * Math.cos(latitudeRad) * Math.sin(longitudeRad);
-    viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
+    if (enableVertical) {
+      viewTarget.y = camera.position.y + distance * Math.sin(latitudeRad);
+    }
     camera.lookAt(viewTarget);
   }
 
