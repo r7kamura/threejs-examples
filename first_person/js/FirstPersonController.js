@@ -41,6 +41,7 @@ var FirstPersonController = function self(args) {
   var canvas       = document;
   var viewHalfX    = window.innerWidth  / 2;
   var viewHalfY    = window.innerHeight / 2;
+  var mouseDrag    = false;
   var moveForward  = false;
   var moveBackward = false;
   var moveLeft     = false;
