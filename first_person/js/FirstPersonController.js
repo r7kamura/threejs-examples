@@ -49,6 +49,7 @@ var FirstPersonController = function self(args) {
   var mouseY       = 0;
   var latitude     = 0;
   var longitude    = 0;
+  var cameraY      = 0;
   var viewTarget   = new THREE.Vector3(0, 0, 100);
 
   bindKeyAndMouseEvents();
@@ -58,10 +59,13 @@ var FirstPersonController = function self(args) {
     var moveDelta = delta * moveSpeed,
         lookDelta = delta * lookSpeed;
 
+    cameraY = camera.position.y;
+    if (!enableVertical) camera.position.y = viewTarget.y;
     if (moveForward)  camera.translateZ(-moveDelta);
     if (moveBackward) camera.translateZ( moveDelta);
     if (moveLeft)     camera.translateX(-moveDelta);
     if (moveRight)    camera.translateX( moveDelta);
+    camera.position.y = cameraY;
 
     longitude += mouseX * lookDelta;
     latitude  -= mouseY * lookDelta;
@@ -102,8 +106,7 @@ var FirstPersonController = function self(args) {
     event.stopPropagation();
 
     mouseX = event.pageX - viewHalfX;
-    if (enableVertical)
-      mouseY = event.pageY - viewHalfY;
+    mouseY = event.pageY - viewHalfY;
   }
 
   function onKeyDown(event) {
