@@ -4,7 +4,8 @@
       scene,
       clock,
       controller,
-      canvas;
+      canvas,
+      stats;
 
   (function self() {
     if (document.body) {
@@ -78,6 +79,114 @@
     }
   }
 
+  function initTerrain() {
+    var size     = 256,
+        heights  = [],
+        geometry = new THREE.Geometry(),
+        delta,
+        x,
+        y,
+        xLength,
+        yLength;
+
+    // initialize 2 dimensions array with 0
+    for (y = 0; y <= size; y++) {
+      heights[y] = [];
+      for (x = 0; x <= size; x++) {
+        heights[y][x] = 0;
+      }
+    }
+
+    // change the edge values
+    heights[0][0]       = randomDelta(size);
+    heights[0][size]    = randomDelta(size);
+    heights[size][0]    = randomDelta(size) + size;
+    heights[size][size] = randomDelta(size) + size;
+
+    // create hights map with random delta
+    for (median = size / 2; median >= 1; median /= 2) {
+      for (y = 0; y <= size; y += median * 2) {
+        for (x = median; x <= size; x += median * 2) {
+          heights[y][x] = (
+            heights[y][x - median] +
+            heights[y][x + median]
+          ) / 2 + randomDelta(median);
+        }
+      }
+
+      for (y = median; y <= size; y += median * 2) {
+        for (x = 0; x <= size; x += median * 2) {
+          heights[y][x] = (
+            heights[y - median][x] +
+            heights[y + median][x]
+          ) / 2 + randomDelta(median);
+        }
+      }
+
+      for (y = median; y <= size; y += median * 2) {
+        for (x = median; x <= size; x += median * 2) {
+          heights[y][x] = (
+            heights[y - median][x] +
+            heights[y + median][x] +
+            heights[y][x - median] +
+            heights[y][x + median]
+          ) / 4 + randomDelta(median);
+        }
+      }
+    }
+
+    // create vertex and faces
+    for (y = 0, yLength = heights.length; y < yLength; y++) {
+      for (x = 0, xLength = heights[y].length; x < xLength; x++) {
+        geometry.vertices.push(
+          new THREE.Vector3(y, heights[y][x], x)
+        );
+
+        if (y != yLength - 1 && x != xLength - 1) {
+          geometry.faces.push(
+            new THREE.Face3(
+              (x + 0) + (y + 0) * yLength,
+              (x + 1) + (y + 0) * yLength,
+              (x + 0) + (y + 1) * yLength
+            )
+          );
+          geometry.faceVertexUvs[0].push([
+            new THREE.UV((x + 0) / size, (y + 0) / size),
+            new THREE.UV((x + 1) / size, (y + 0) / size),
+            new THREE.UV((x + 0) / size, (y + 1) / size)
+          ]);
+        }
+
+        if (y != 0 && x != 0) {
+          geometry.faces.push(
+            new THREE.Face3(
+              (x + 0) + (y + 0) * yLength,
+              (x - 1) + (y + 0) * yLength,
+              (x + 0) + (y - 1) * yLength
+            )
+          );
+          geometry.faceVertexUvs[0].push([
+            new THREE.UV((x + 0) / size, (y + 0) / size),
+            new THREE.UV((x - 1) / size, (y + 0) / size),
+            new THREE.UV((x + 0) / size, (y - 1) / size)
+          ]);
+        }
+      }
+    }
+    geometry.computeFaceNormals();
+
+    scene.add(
+      new THREE.Mesh(
+        geometry,
+        new THREE.MeshLambertMaterial({ color: 0x339900 })
+      )
+    );
+
+    function randomDelta(size) {
+      return (Math.random() - 0.5) * size;
+    }
+  }
+
   function initSky() {
     var sky = new THREE.Mesh(
       new THREE.SphereGeometry(4000, 20, 20),
@@ -96,7 +205,13 @@
     clock = new THREE.Clock();
   }
 
+  function initStats() {
+    stats = new Stats();
+    document.getElementById('stats-outer').appendChild(stats.domElement);
+  }
+
   function render() {
+    stats.update();
     controller.update(clock.getDelta());
     renderer.clear();
     renderer.render(scene, camera);
@@ -115,7 +230,9 @@
     initLight();
     initFloor();
     initSky();
+    initTerrain();
     initController();
+    initStats();
     appendCanvas();
     render();
   }
