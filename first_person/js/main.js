@@ -8,12 +8,26 @@
       stats;
 
   (function self() {
-    if (document.body) {
-      init();
-    } else {
+    document.body ?
+      init() :
       setTimeout(self, 1);
-    }
   })();
+
+  function init() {
+    initCanvas();
+    initRenderer();
+    initScene();
+    initCamera();
+    initLight();
+    initFloor();
+    initSky();
+    initTerrain();
+    // initGround();
+    initController();
+    initStats();
+    appendCanvas();
+    render();
+  }
 
   function initCanvas() {
     canvas = document.getElementById('canvas');
@@ -77,6 +91,59 @@
         scene.add(tile);
       }
     }
+  }
+
+  function initGround() {
+    var height     = 256,
+        width      = 256,
+        worldWidth = 256,
+        worldDepth = 256,
+        size       = heights * width,
+        heights    = [],
+        perlin     = new ImprovedNoise(),
+        length,
+        i,
+        x,
+        y,
+        geometry,
+        texture;
+
+    // this processing may be unnecessary
+    // initialize 2 dimensions array with 0
+    for (i = 0; y < size; i++) {
+      y = ~~(i / width);
+      x = i % width;
+      heights[i] += Math.abs(perlin.noise(x, y, 1));
+    }
+
+    geometry = new THREE.PlaneGeometry(
+      7500,
+      7500,
+      worldWidth - 1,
+      worldDepth - 1
+    );
+    for (i = 0, length = geometry.vertices.length; i < length; i ++ ) {
+      geometry.vertices[i].y = heights[i] * 10;
+    }
+
+    texture = new THREE.Texture(
+      generateTexture(
+        heights,
+        worldWidth,
+        worldDepth
+      ),
+      new THREE.UVMapping(),
+      THREE.ClampToEdgeWrapping,
+      THREE.ClampToEdgeWrapping
+    );
+    texture.needsUpdate = true;
+
+    scene.add(
+      new THREE.Mesh(
+        geometry,
+        new THREE.MeshBasicMaterial({ map: texture })
+      )
+    );
   }
 
   function initTerrain() {
@@ -220,20 +287,5 @@
 
   function appendCanvas() {
     canvas.appendChild(renderer.domElement);
-  }
-
-  function init() {
-    initCanvas();
-    initRenderer();
-    initScene();
-    initCamera();
-    initLight();
-    initFloor();
-    initSky();
-    initTerrain();
-    initController();
-    initStats();
-    appendCanvas();
-    render();
   }
 })();
