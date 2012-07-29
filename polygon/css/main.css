@@ -1,0 +1,11 @@
+html,
+body,
+#canvas {
+  height: 100%;
+}
+
+#stats {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
