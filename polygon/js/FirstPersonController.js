@@ -24,12 +24,6 @@
 *     renderer.render(scene, camera);
 *     window.requestAnimationFrame(render);
 *   }
-*
-* @class Behave first-person viewpoint.
-* @params args.camera THREE.camera
-* @params [args.moveSpeed] scale of movement speed (default: 1000)
-* @params [args.distance] distance from camera to its target point (default: 1000)
-* @params [agrs.enableVertical] flag to allow move vertically
 * */
 var FirstPersonController = function self(args) {
   var camera         = args.camera;
