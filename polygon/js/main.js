@@ -106,14 +106,12 @@
   }
 
   function initObjects() {
-    var geometry = new THREE.Geometry();
+    var geometry = new THREE.Geometry(),
+        face     = new THREE.Face3(0, 1, 2);
 
     geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(0, 0, 100));
-    geometry.vertices.push(new THREE.Vector3(0, 100, 0));
-
-    var face = new THREE.Face3(0, 1, 2);
-    face.normal = new THREE.Vector3(0, 0, 1);
+    geometry.vertices.push(new THREE.Vector3(0, 0, 500));
+    geometry.vertices.push(new THREE.Vector3(0, 500, 0));
     geometry.faces.push(face);
 
     scene.add(
