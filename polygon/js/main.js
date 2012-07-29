@@ -20,31 +20,66 @@
     initCamera();
     initLight();
     initSky();
-    initController();
-    initStats();
     initFloor();
     initObjects();
+    initController();
+    initStats();
     appendCanvas();
     render();
   }
 
-  function initObjects() {
-    var geometry = new THREE.Geometry();
+  function initCanvas() {
+    canvas = document.getElementById('canvas');
+  }
 
-    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-    geometry.vertices.push(new THREE.Vector3(0, 0, 100));
-    geometry.vertices.push(new THREE.Vector3(0, 100, 0));
+  function initRenderer() {
+    renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setClearColorHex(0xFFFFFF, 1.0);
+  }
 
-    var face = new THREE.Face3(0, 1, 2);
-    face.normal = new THREE.Vector3(0, 0, 1);
-    geometry.faces.push(face);
+  function initScene() {
+    scene = new THREE.Scene();
+  }
 
-    scene.add(
-      new THREE.Mesh(
-        geometry,
-        new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
-      )
+  function initCamera() {
+    camera = new THREE.PerspectiveCamera(
+      50,
+      canvas.clientWidth / canvas.clientHeight,
+      1,
+      10000
     );
+    camera.position.x = -1000;
+    camera.position.y = 100;
+    camera.position.z = 0;
+    camera.up.x = 0;
+    camera.up.y = 1;
+    camera.up.z = 0;
+    camera.lookAt({
+      x: 0,
+      y: 1000,
+      z: 0
+    });
+    scene.add(camera);
+  }
+
+  function initLight() {
+    var light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
+    light.position.set(0, 1000, 0);
+    scene.add(light);
+  }
+
+  function initSky() {
+    var sky = new THREE.Mesh(
+      new THREE.SphereGeometry(4000, 20, 20),
+      new THREE.MeshBasicMaterial({
+        color: 0xFFFFFF,
+        map: THREE.ImageUtils.loadTexture("images/sky.png")
+      })
+    );
+    sky.flipSided = true;
+    scene.add(sky);
+    scene.fog = new THREE.FogExp2(0xFFFFFF, 0.0002);
   }
 
   function initFloor() {
@@ -70,58 +105,23 @@
     }
   }
 
-  function initCanvas() {
-    canvas = document.getElementById('canvas');
-  }
+  function initObjects() {
+    var geometry = new THREE.Geometry();
 
-  function initRenderer() {
-    renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setClearColorHex(0xFFFFFF, 1.0);
-  }
+    geometry.vertices.push(new THREE.Vector3(0, 0, 0));
+    geometry.vertices.push(new THREE.Vector3(0, 0, 100));
+    geometry.vertices.push(new THREE.Vector3(0, 100, 0));
 
-  function initCamera() {
-    camera = new THREE.PerspectiveCamera(
-      50,
-      canvas.clientWidth / canvas.clientHeight,
-      1,
-      10000
+    var face = new THREE.Face3(0, 1, 2);
+    face.normal = new THREE.Vector3(0, 0, 1);
+    geometry.faces.push(face);
+
+    scene.add(
+      new THREE.Mesh(
+        geometry,
+        new THREE.MeshBasicMaterial({ color: 0xFFFFFF })
+      )
     );
-    camera.position.x = -1000;
-    camera.position.y = 100;
-    camera.position.z = 0;
-    camera.up.x = 0;
-    camera.up.y = 1;
-    camera.up.z = 0;
-    camera.lookAt({
-      x: 0,
-      y: 1000,
-      z: 0
-    });
-    scene.add(camera);
-  }
-
-  function initScene() {
-    scene = new THREE.Scene();
-  }
-
-  function initLight() {
-    var light = new THREE.DirectionalLight(0xFFFFFF, 1.0);
-    light.position.set(0, 1000, 0);
-    scene.add(light);
-  }
-
-  function initSky() {
-    var sky = new THREE.Mesh(
-      new THREE.SphereGeometry(4000, 20, 20),
-      new THREE.MeshBasicMaterial({
-        color: 0xFFFFFF,
-        map: THREE.ImageUtils.loadTexture("images/sky.png")
-      })
-    );
-    sky.flipSided = true;
-    scene.add(sky);
-    scene.fog = new THREE.FogExp2(0xFFFFFF, 0.0002);
   }
 
   function initController() {
