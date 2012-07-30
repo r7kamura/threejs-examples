@@ -148,6 +148,7 @@
 
   function initTerrain() {
     var size     = 256,
+        scale    = 8,
         heights  = [],
         geometry = new THREE.Geometry(),
         delta,
@@ -164,49 +165,21 @@
       }
     }
 
-    // change the edge values
-    heights[0][0]       = randomDelta(size);
-    heights[0][size]    = randomDelta(size);
-    heights[size][0]    = randomDelta(size) + size;
-    heights[size][size] = randomDelta(size) + size;
+    // change the edge values of height map
+    heights[size / 2][size / 2] = size * 2;
 
-    // create hights map with random delta
-    for (median = size / 2; median >= 1; median /= 2) {
-      for (y = 0; y <= size; y += median * 2) {
-        for (x = median; x <= size; x += median * 2) {
-          heights[y][x] = (
-            heights[y][x - median] +
-            heights[y][x + median]
-          ) / 2 + randomDelta(median);
-        }
-      }
+    // generate height map
+    updateHeightMep(heights);
 
-      for (y = median; y <= size; y += median * 2) {
-        for (x = 0; x <= size; x += median * 2) {
-          heights[y][x] = (
-            heights[y - median][x] +
-            heights[y + median][x]
-          ) / 2 + randomDelta(median);
-        }
-      }
-
-      for (y = median; y <= size; y += median * 2) {
-        for (x = median; x <= size; x += median * 2) {
-          heights[y][x] = (
-            heights[y - median][x] +
-            heights[y + median][x] +
-            heights[y][x - median] +
-            heights[y][x + median]
-          ) / 4 + randomDelta(median);
-        }
-      }
-    }
-
-    // create vertex and faces
+    // create vertices and faces from height map
     for (y = 0, yLength = heights.length; y < yLength; y++) {
       for (x = 0, xLength = heights[y].length; x < xLength; x++) {
         geometry.vertices.push(
-          new THREE.Vector3(y, heights[y][x], x)
+          new THREE.Vector3(
+            y * scale,
+            heights[y][x] * scale,
+            x * scale
+          )
         );
 
         if (y != yLength - 1 && x != xLength - 1) {
@@ -248,6 +221,48 @@
         new THREE.MeshLambertMaterial({ color: 0x339900 })
       )
     );
+
+    // take 2 dimensions array as heights and update it
+    // by random midpoint displacement method
+    function updateHeightMep(heights) {
+      var height = heights.length - 1,
+          width  = heights[0].length - 1,
+          median,
+          x,
+          y;
+
+      // create hights map with random delta
+      for (median = height / 2; median >= 1; median /= 2) {
+        for (y = 0; y <= height; y += median * 2) {
+          for (x = median; x <= width; x += median * 2) {
+            heights[y][x] = (
+              heights[y][x - median] +
+              heights[y][x + median]
+            ) / 2 + randomDelta(median);
+          }
+        }
+
+        for (y = median; y <= height; y += median * 2) {
+          for (x = 0; x <= width; x += median * 2) {
+            heights[y][x] = (
+              heights[y - median][x] +
+              heights[y + median][x]
+            ) / 2 + randomDelta(median);
+          }
+        }
+
+        for (y = median; y <= height; y += median * 2) {
+          for (x = median; x <= width; x += median * 2) {
+            heights[y][x] = (
+              heights[y - median][x] +
+              heights[y + median][x] +
+              heights[y][x - median] +
+              heights[y][x + median]
+            ) / 4 + randomDelta(median);
+          }
+        }
+      }
+    }
 
     function randomDelta(size) {
       return (Math.random() - 0.5) * size;
